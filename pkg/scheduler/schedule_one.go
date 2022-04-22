@@ -712,18 +712,22 @@ func selectHost(nodeScoreList framework.NodeScoreList) (string, error) {
 	}
 	maxScore := nodeScoreList[0].Score
 	selected := nodeScoreList[0].Name
-	cntOfMaxScore := 1
+	//cntOfMaxScore := 1
 	for _, ns := range nodeScoreList[1:] {
 		if ns.Score > maxScore {
 			maxScore = ns.Score
 			selected = ns.Name
-			cntOfMaxScore = 1
+			//cntOfMaxScore = 1
 		} else if ns.Score == maxScore {
-			cntOfMaxScore++
-			if rand.Intn(cntOfMaxScore) == 0 {
-				// Replace the candidate with probability of 1/cntOfMaxScore
+			//cntOfMaxScore++
+			// for reproducibility, choose the smallest lexicographical order if the score remains the same
+			if ns.Name < selected {
 				selected = ns.Name
 			}
+			//if rand.Intn(cntOfMaxScore) == 0 {
+			//	// Replace the candidate with probability of 1/cntOfMaxScore
+			//	selected = ns.Name
+			//}
 		}
 	}
 	return selected, nil
